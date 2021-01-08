@@ -1,0 +1,54 @@
+<resources>
+    <string name="app_name">NewAS</string>
+
+    <string name="core_share_success">分享成功</string>
+    <string name="core_share_fail">抱歉,分享失败</string>
+    <string name="core_share_weather">分享天气</string>
+    <string name="core_share_app">分享应用</string>
+
+
+    <string name="core_known">我知道了</string>
+    <string name="core_tip_not_show">不再提示</string>
+
+    <string name="core_follow_system">跟随系统</string>
+    <string name="core_pure_white">优雅纯白</string>
+
+    <string name="core_ok">确定</string>
+    <string name="core_cancel">取消</string>
+
+    <string name="city_guide_info">单击城市卡片选择默认城市,\n长按进行编辑</string>
+
+    <string name="city_select">选择城市</string>
+    <string name="city_hot">热门城市</string>
+    <string name="city_located">定位城市</string>
+    <string name="city_search">搜索城市</string>
+    <string name="city_hint_search_box">输入城市名或拼音</string>
+    <string name="city_nothing_found">没有搜索结果~</string>
+    <string name="city_locating">正在定位…</string>
+    <string name="city_located_failed">定位失败</string>
+
+    <string name="week_today">星期%1$s&#160;&#160;&#160;今天</string>
+    <string name="week">星期%1$s</string>
+    <string name="high_low_temperature">%1$s&#160;&#160;&#160;%2$s</string>
+
+    <string name="weather_summary">今天:现在%1$s，最高气温%2$s。今晚%3$s，最低气温%4$s。</string>
+
+    <string name="sunrise">日出</string>
+    <string name="sunrise_time">07:00</string>
+    <string name="sunset">日落</string>
+    <string name="sunset_time">17:50</string>
+
+    <string name="rain_probability">降雨概率</string>
+    <string name="humidity">湿度</string>
+
+    <string name="percent_sign">%1$s%</string>
+
+    <string name="wind">风</string>
+    <string name="body_temperature">体感温度</string>
+
+    <string name="precipitation">降水量</string>
+    <string name="air_pressure">气压</string>
+
+    <string name="visibility">能见度</string>
+    <string name="uv_index">紫外线指数</string>
+</resources>

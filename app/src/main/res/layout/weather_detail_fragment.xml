@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/city_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="fuzhou"
+            android:textSize="35sp" />
+
+        <TextView
+            android:id="@+id/now_weather"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="大部多云"
+            android:textSize="25sp" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tv_week_today"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="星期一 今天" />
+
+        <TextView
+            android:id="@+id/tv_high_low_temperature"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="20  13" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#303F9F" />
+
+    <com.jueme.android.newas.WeatherOneHourRecyclerView
+        android:id="@+id/rv_weather_oneHour"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#303F9F" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_weather_week"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</LinearLayout>
