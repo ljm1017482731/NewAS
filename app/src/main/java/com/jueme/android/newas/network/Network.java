@@ -25,7 +25,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Created by Jueme on 2020/12/23
  **/
 public class Network {
-    private static final String TAG = "DataTest";
+    private static final String TAG = "Network";
     private static DataStatusListener mDataStatusListener;
 
     public interface DataStatusListener {

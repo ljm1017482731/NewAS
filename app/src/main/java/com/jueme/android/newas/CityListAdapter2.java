@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.jueme.android.newas.bean.ShowapiResBody;
 import com.jueme.android.newas.view.CityBean;
 
 import java.util.List;
@@ -25,7 +26,7 @@ public class CityListAdapter2 extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     private OnItemClickListener mListener;
 
-    private List<CityBean> cityBeans;
+    private List<ShowapiResBody> showapiResBodies;
 
     private View mFootView;
 
@@ -34,9 +35,9 @@ public class CityListAdapter2 extends RecyclerView.Adapter<RecyclerView.ViewHold
     final private int ITEM_VIEW = 1;
     final private int FOOT_VIEW = 2;
 
-    public CityListAdapter2(Context context, List<CityBean> cityBeans) {
+    public CityListAdapter2(Context context, List<ShowapiResBody> showapiResBodies) {
         mContext = context;
-        this.cityBeans = cityBeans;
+        this.showapiResBodies = showapiResBodies;
     }
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
@@ -45,14 +46,6 @@ public class CityListAdapter2 extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     public void addFootView(View footView) {
         mFootView = footView;
-    }
-
-    public List<CityBean> getCityBeans() {
-        return cityBeans;
-    }
-
-    public void setCityBeans(List<CityBean> cityBeans) {
-        this.cityBeans = cityBeans;
     }
 
     @Override
@@ -78,7 +71,7 @@ public class CityListAdapter2 extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     public int getItemViewType(int position) {
-        if (position == cityBeans.size()) {
+        if (position == showapiResBodies.size()) {
             return FOOT_VIEW;
         } else {
             return ITEM_VIEW;
@@ -107,9 +100,9 @@ public class CityListAdapter2 extends RecyclerView.Adapter<RecyclerView.ViewHold
         if (holder instanceof FootViewHolder) {
 
         } else if (holder instanceof RecyclerViewHolder) {
-            Log.d(TAG, "onBindViewHolder: " + cityBeans.get(position).getCityName());
-            ((RecyclerViewHolder) holder).city_name.setText(cityBeans.get(position).getCityName());
-            ((RecyclerViewHolder) holder).temperature.setText(cityBeans.get(position).getTemperature());
+            Log.d(TAG, "onBindViewHolder: " + showapiResBodies.get(position).getCityinfo().getC3());
+            ((RecyclerViewHolder) holder).city_name.setText(showapiResBodies.get(position).getCityinfo().getC3());
+            ((RecyclerViewHolder) holder).temperature.setText(showapiResBodies.get(position).getNow().getTemperature());
         }
         holder.itemView.setTag(position);
     }
@@ -117,9 +110,9 @@ public class CityListAdapter2 extends RecyclerView.Adapter<RecyclerView.ViewHold
     @Override
     public int getItemCount() {
         if (mFootView != null) {
-            return cityBeans.size() + 1;
+            return showapiResBodies.size() + 1;
         } else {
-            return cityBeans.size();
+            return showapiResBodies.size();
         }
     }
 
@@ -140,9 +133,6 @@ public class CityListAdapter2 extends RecyclerView.Adapter<RecyclerView.ViewHold
         public FootViewHolder(@NonNull View itemView) {
             super(itemView);
             itemView.setOnClickListener(CityListAdapter2.this);
-            //itemView.setFocusable(false);
-            //itemView.setEnabled(false);
-           // mContainer = (ViewGroup) itemView.findViewById(R.id.container);
         }
     }
 }

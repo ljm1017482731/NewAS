@@ -11,23 +11,18 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.room.Room;
 
 import com.jueme.android.newas.bean.ShowapiResBody;
-import com.jueme.android.newas.database.City;
-import com.jueme.android.newas.database.CityDao;
-import com.jueme.android.newas.database.CityDatabase;
 import com.jueme.android.newas.network.Network;
-import com.jueme.android.newas.view.CityBean;
 import com.lljjcoder.style.citylist.CityListSelectActivity;
 import com.lljjcoder.style.citylist.bean.CityInfoBean;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -39,14 +34,7 @@ public class CityListActivity extends AppCompatActivity implements Network.DataS
 
     private CityListAdapter2 cityListAdapter;
 
-    private ArrayList<CityBean> list;
-
-    private FragmentManager fm;
-
-    String[] cityNames = new String[]{"惠州", "广州", "拉萨", "吉林", "上海", "乌鲁木齐", "黑龙江", "北京", "呼和浩特", "兰州"};
-    private CityDatabase cityDatabase;
-    private CityDao cityDao;
-    private RecyclerView.ViewHolder mViewHolder;
+    private List<ShowapiResBody> bodies;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,40 +43,26 @@ public class CityListActivity extends AppCompatActivity implements Network.DataS
         ButterKnife.bind(this);
 
         Network.setDataStatusListener(this);
-
-        fm = getSupportFragmentManager();
-
-        list = (ArrayList<CityBean>) getIntent().getSerializableExtra("cityNames");
-        //list = new ArrayList<>();
-
-
-      /*  CityBean cityBean = new CityBean("深圳","23");
-        list.add(cityBean);
-        cityBean = new CityBean("北京","-3");
-        list.add(cityBean);
-        cityBean = new CityBean("北京","-3");
-        list.add(cityBean);
-        list.add(cityBean);
-        cityBean = new CityBean("北京","-3");
-        list.add(cityBean);*/
+        bodies = Util.readJsonData(getApplicationContext());
+        if(bodies==null){
+            bodies = new ArrayList<>();
+        }
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         city_recyclerView.setLayoutManager(layoutManager);
-        //cityListAdapter = new CityListAdapter(getApplicationContext(),list);
-        cityListAdapter = new CityListAdapter2(getApplicationContext(), list);
+        cityListAdapter = new CityListAdapter2(getApplicationContext(), bodies);
 
         cityListAdapter.setOnItemClickListener(new CityListAdapter2.OnItemClickListener() {
             @Override
             public void onItemClick(RecyclerView.Adapter adapter, View v, int position) {
-                Log.d(TAG, "onItemClick: " + position+" list "+list.size());
-                if (position == list.size()) {
+                Log.d(TAG, "onItemClick: " + position + " list " + bodies.size());
+                if (position == bodies.size()) {
                     Intent intent = new Intent(CityListActivity.this, CityListSelectActivity.class);
                     startActivityForResult(intent, CityListSelectActivity.CITY_SELECT_RESULT_FRAG);
                 } else {
                     Intent intent = new Intent(CityListActivity.this, MainActivity.class);
                     intent.putExtra("currentItem", position);
-                    intent.putExtra("cityNames", list);
-                    startActivity(intent);
+                    setResult(RESULT_OK, intent);
                     finish();
                 }
             }
@@ -103,10 +77,6 @@ public class CityListActivity extends AppCompatActivity implements Network.DataS
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
         //绑定到recyclerView上面
         itemTouchHelper.attachToRecyclerView(city_recyclerView);
-
-        cityDatabase = Room.databaseBuilder(this, CityDatabase.class, "city_database").allowMainThreadQueries().build();
-        cityDao = cityDatabase.getCityDao();
-
     }
 
     ItemTouchHelper.Callback callback = new ItemTouchHelper.Callback() {
@@ -114,8 +84,8 @@ public class CityListActivity extends AppCompatActivity implements Network.DataS
         public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
             Log.d("SimpleCallback", "getMovementFlags: ");
             final int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
-            final int swipeFlags = ItemTouchHelper.LEFT;//0
-            mViewHolder = viewHolder;
+            //只允许向左滑动
+            final int swipeFlags = ItemTouchHelper.LEFT;
 
             if (viewHolder instanceof CityListAdapter2.FootViewHolder) {
                 return 0;
@@ -135,41 +105,26 @@ public class CityListActivity extends AppCompatActivity implements Network.DataS
                 int toPosition = target.getAdapterPosition();
                 if (fromPosition < toPosition) {
                     for (int i = fromPosition; i < toPosition; i++) {
-                        Collections.swap(list, i, i + 1);
+                        Collections.swap(bodies, i, i + 1);
                     }
                 } else {
                     for (int i = fromPosition; i > toPosition; i--) {
-                        Collections.swap(list, i, i - 1);
+                        Collections.swap(bodies, i, i - 1);
                     }
                 }
-                //将数据库中的两个数据
-                //cityDao.updateByPosition(cityDao.getCityByPosition(fromPosition).getId(),toPosition);
-                //cityDao.updateByPosition(cityDao.getCityByPosition(toPosition).getId(),fromPosition);
-                String fromCityName = list.get(fromPosition).getCityName();
-                int cityFrom =cityDao.getCityByName(fromCityName).getPosition();
-
-                String toCityName = list.get(toPosition).getCityName();
-                int cityTo =cityDao.getCityByName(toCityName).getPosition();
-
-                Log.d(TAG, "updateByName: fromCityName "+fromCityName+" cityFrom "+cityFrom);
-                cityDao.updateByName(fromCityName,cityTo);
-
-                Log.d(TAG, "updateByName: toCityName "+toCityName+" cityTo "+cityTo);
-                cityDao.updateByName(toCityName,cityFrom);
-
                 cityListAdapter.notifyItemMoved(fromPosition, toPosition);
+                Util.saveJsonData(getApplicationContext(), bodies);
                 return true;
             }
         }
 
         @Override
         public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-            //暂不处理  这个主要是做左右拖动的回调
-            Log.d("SimpleCallback", "onSwiped: " + viewHolder.getAdapterPosition()+" getCityName "+list.get(viewHolder.getAdapterPosition()).getCityName());
-            cityDao.deleteCityByName(list.get(viewHolder.getAdapterPosition()).getCityName());
-            list.remove(viewHolder.getAdapterPosition());
+            //左右拖动的回调
+            bodies.remove(viewHolder.getAdapterPosition());
             cityListAdapter.notifyItemRemoved(viewHolder.getAdapterPosition());
             cityListAdapter.notifyDataSetChanged();
+            Util.saveJsonData(getApplicationContext(), bodies);
         }
 
         @Override
@@ -220,7 +175,7 @@ public class CityListActivity extends AppCompatActivity implements Network.DataS
             Log.d("SimpleCallback", "clearView: ");
             viewHolder.itemView.setBackgroundColor(0);
             //更新数据，要不然position不会更新
-            if(!recyclerView.isComputingLayout()){
+            if (!recyclerView.isComputingLayout()) {
                 cityListAdapter.notifyDataSetChanged();
             }
         }
@@ -248,10 +203,7 @@ public class CityListActivity extends AppCompatActivity implements Network.DataS
                 if (null == cityInfoBean) {
                     return;
                 }
-
-                //mResultTv.setText("城市： " + cityInfoBean.getName()+"  "+cityInfoBean.getId());
                 Network.getWeatherData(cityInfoBean.getName());
-                Log.d(TAG, "onActivityResult: "+cityDao.getCityCount());
             }
         }
     }
@@ -264,10 +216,9 @@ public class CityListActivity extends AppCompatActivity implements Network.DataS
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            Log.d(TAG, "onKeyDown: ");
-            Intent intent = new Intent();
-            intent.putExtra("test", 100);
-            setResult(1, intent);
+            Intent intent = new Intent(CityListActivity.this, MainActivity.class);
+            intent.putExtra("currentItem", 0);
+            setResult(RESULT_OK, intent);
             finish();
             return super.onKeyDown(keyCode, event);
         }
@@ -277,7 +228,6 @@ public class CityListActivity extends AppCompatActivity implements Network.DataS
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.d(TAG, "onDestroy: ");
     }
 
     @Override
@@ -289,12 +239,8 @@ public class CityListActivity extends AppCompatActivity implements Network.DataS
 
     @Override
     public void getDataSuccess(ShowapiResBody showapiResBody) {
-        CityBean cityBean = new CityBean(showapiResBody.getCityinfo().getC3(), showapiResBody.getNow().getTemperature());
-        list.add(cityBean);
-        //请求成功后保存数据
-        City city = new City(cityBean.getCityName(),cityDao.getMaxNum()+1);
-        cityDao.insertCitys(city);
-
+        bodies.add(showapiResBody);
+        Util.saveJsonData(getApplicationContext(), bodies);
         cityListAdapter.notifyDataSetChanged();
     }
 

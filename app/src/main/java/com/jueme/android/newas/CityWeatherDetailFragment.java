@@ -14,11 +14,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.jueme.android.newas.bean.F;
 import com.jueme.android.newas.bean.ShowapiResBody;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -47,10 +43,6 @@ public class CityWeatherDetailFragment extends Fragment {
     @BindView(R.id.rv_weather_week)
     RecyclerView rv_weather_week;
 
-
-    private String cityName;
-    private String nowWeather;
-
     private ShowapiResBody showapiResBody;
 
     public CityWeatherDetailFragment(ShowapiResBody showapiResBody) {
@@ -60,7 +52,6 @@ public class CityWeatherDetailFragment extends Fragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        Log.d(TAG, "onAttach: ");
     }
 
     @Nullable
