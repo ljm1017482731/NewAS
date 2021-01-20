@@ -11,23 +11,22 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.jueme.android.newas.bean.ShowapiResBody;
-import com.jueme.android.newas.view.CityBean;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+
 /**
  * Created by Jueme on 2021/1/6
  **/
-public class CityListAdapter2 extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements View.OnClickListener {
+public class CityListAdapter2 extends RecyclerView.Adapter implements View.OnClickListener {
     private static final String TAG = "CityListAdapter2";
 
     private OnItemClickListener mListener;
 
     private List<ShowapiResBody> showapiResBodies;
-
     private View mFootView;
 
     private Context mContext;
@@ -50,9 +49,8 @@ public class CityListAdapter2 extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     public void onClick(View v) {
-        if (mListener != null) {
-            mListener.onItemClick(this, v, (int) v.getTag());
-        }
+        Log.d(TAG, "onClick: ");
+        mListener.onItemClick(this, v, (int) v.getTag(R.id.list_type), (int) v.getTag(R.id.position));
     }
 
     /**
@@ -66,7 +64,7 @@ public class CityListAdapter2 extends RecyclerView.Adapter<RecyclerView.ViewHold
          * @param v        The view that was clicked.
          * @param position The position of the view in the adapter.
          */
-        void onItemClick(RecyclerView.Adapter adapter, View v, int position);
+        void onItemClick(RecyclerView.Adapter adapter, View v, int type, int position);
     }
 
     @Override
@@ -82,8 +80,6 @@ public class CityListAdapter2 extends RecyclerView.Adapter<RecyclerView.ViewHold
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == FOOT_VIEW) {
-            //View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.city_item_footer, parent, false);
-            //FootViewHolder viewHolder = new FootViewHolder(view);
             FootViewHolder viewHolder = new FootViewHolder(mFootView);
             return viewHolder;
         } else if (viewType == ITEM_VIEW) {
@@ -98,13 +94,15 @@ public class CityListAdapter2 extends RecyclerView.Adapter<RecyclerView.ViewHold
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof FootViewHolder) {
-
+            holder.itemView.setTag(R.id.list_type, FOOT_VIEW);
         } else if (holder instanceof RecyclerViewHolder) {
             Log.d(TAG, "onBindViewHolder: " + showapiResBodies.get(position).getCityinfo().getC3());
-            ((RecyclerViewHolder) holder).city_name.setText(showapiResBodies.get(position).getCityinfo().getC3());
-            ((RecyclerViewHolder) holder).temperature.setText(showapiResBodies.get(position).getNow().getTemperature());
+            RecyclerViewHolder viewHolder = (RecyclerViewHolder) holder;
+            viewHolder.city_name.setText(showapiResBodies.get(position).getCityinfo().getC3());
+            viewHolder.temperature.setText(showapiResBodies.get(position).getNow().getTemperature());
+            holder.itemView.setTag(R.id.list_type, ITEM_VIEW);
         }
-        holder.itemView.setTag(position);
+        holder.itemView.setTag(R.id.position, position);
     }
 
     @Override
@@ -116,7 +114,7 @@ public class CityListAdapter2 extends RecyclerView.Adapter<RecyclerView.ViewHold
         }
     }
 
-    class RecyclerViewHolder extends RecyclerView.ViewHolder {
+    public class RecyclerViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.city_name)
         TextView city_name;
         @BindView(R.id.temperature)
@@ -129,7 +127,7 @@ public class CityListAdapter2 extends RecyclerView.Adapter<RecyclerView.ViewHold
         }
     }
 
-    class FootViewHolder extends RecyclerView.ViewHolder {
+    public class FootViewHolder extends RecyclerView.ViewHolder {
         public FootViewHolder(@NonNull View itemView) {
             super(itemView);
             itemView.setOnClickListener(CityListAdapter2.this);

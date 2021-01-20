@@ -9,9 +9,7 @@ import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.jueme.android.newas.bean.ShowapiResBody;
@@ -66,9 +64,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         bodyList = Util.readJsonData(getApplicationContext());
 
         if (bodyList != null) {
-            //判断当前是否有网络，没有网络直接加载本地的数据
             String oldTime = bodyList.get(0).getF1().getDay();
-
+            //判断当前是否有网络，没有网络直接加载本地的数据
             if (Util.isNetworkConnected(getApplicationContext()) && Util.isNetworkOnline()) {
                 //如果时间戳一样就说明数据不需要重新加载，否则就要重新获取数据
                 if (Util.getTime().equals(oldTime)) {
@@ -119,28 +116,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Log.d(TAG, "onActivityResult: requestCode " + requestCode + " resultCode " + resultCode);
         if (resultCode == RESULT_OK && requestCode == 100) {
             currentItem = data.getIntExtra("currentItem", 0);
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        Thread.sleep(1000);
-                        List<ShowapiResBody> jsonData = Util.readJsonData(getApplicationContext());
-                        if (jsonData != null) {
-                            for (int i = 0; i < jsonData.size(); i++) {
-                                Log.d(TAG, "onActivityResult: " + jsonData.get(i).getCityinfo().getC3());
-                                CityWeatherDetailFragment fragment = new CityWeatherDetailFragment(jsonData.get(i));
-                                cityWeatherDetailAdapter.addFragment(fragment);
-                    /*if (i == currentItem) {
+            List<ShowapiResBody> jsonData = Util.readJsonData(getApplicationContext());
+            if (jsonData != null) {
+                for (int i = 0; i < jsonData.size(); i++) {
+                    Log.d(TAG, "onActivityResult: " + jsonData.get(i).getCityinfo().getC3());
+                    CityWeatherDetailFragment fragment = new CityWeatherDetailFragment(jsonData.get(i));
+                    cityWeatherDetailAdapter.addFragment(fragment);
+                    if (i == currentItem) {
                         viewPager2.setCurrentItem(i, false);
-                    }*/
-                            }
-                            fm.beginTransaction();
-                        }
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
                     }
                 }
-            });
+                fm.beginTransaction();
+            }
         }
     }
 
@@ -164,6 +151,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         CityWeatherDetailFragment fragment = new CityWeatherDetailFragment(showapiResBody);
         cityWeatherDetailAdapter.addFragment(fragment);
         fm.beginTransaction();
+        bodyList.set(count-1,showapiResBody);
     }
 
     @Override

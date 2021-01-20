@@ -51,4 +51,7 @@
 
     <string name="visibility">能见度</string>
     <string name="uv_index">紫外线指数</string>
+
+    <item type="id" name="list_type"></item>
+    <item type="id" name="position"></item>
 </resources>

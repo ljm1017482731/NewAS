@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -44,7 +45,7 @@ public class CityListActivity extends AppCompatActivity implements Network.DataS
 
         Network.setDataStatusListener(this);
         bodies = Util.readJsonData(getApplicationContext());
-        if(bodies==null){
+        if (bodies == null) {
             bodies = new ArrayList<>();
         }
 
@@ -54,16 +55,16 @@ public class CityListActivity extends AppCompatActivity implements Network.DataS
 
         cityListAdapter.setOnItemClickListener(new CityListAdapter2.OnItemClickListener() {
             @Override
-            public void onItemClick(RecyclerView.Adapter adapter, View v, int position) {
-                Log.d(TAG, "onItemClick: " + position + " list " + bodies.size());
-                if (position == bodies.size()) {
-                    Intent intent = new Intent(CityListActivity.this, CityListSelectActivity.class);
-                    startActivityForResult(intent, CityListSelectActivity.CITY_SELECT_RESULT_FRAG);
-                } else {
+            public void onItemClick(RecyclerView.Adapter adapter, View v, int type, int position) {
+                Log.d(TAG, "onItemClick: position " + position + " type " + type);
+                if (type == 1) {
                     Intent intent = new Intent(CityListActivity.this, MainActivity.class);
                     intent.putExtra("currentItem", position);
                     setResult(RESULT_OK, intent);
                     finish();
+                } else if (type == 2) {
+                    Intent intent = new Intent(CityListActivity.this, CityListSelectActivity.class);
+                    startActivityForResult(intent, CityListSelectActivity.CITY_SELECT_RESULT_FRAG);
                 }
             }
         });
@@ -77,6 +78,7 @@ public class CityListActivity extends AppCompatActivity implements Network.DataS
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
         //绑定到recyclerView上面
         itemTouchHelper.attachToRecyclerView(city_recyclerView);
+
     }
 
     ItemTouchHelper.Callback callback = new ItemTouchHelper.Callback() {
@@ -85,7 +87,7 @@ public class CityListActivity extends AppCompatActivity implements Network.DataS
             Log.d("SimpleCallback", "getMovementFlags: ");
             final int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
             //只允许向左滑动
-            final int swipeFlags = ItemTouchHelper.LEFT;
+            final int swipeFlags = ItemTouchHelper.LEFT;//ItemTouchHelper.LEFT
 
             if (viewHolder instanceof CityListAdapter2.FootViewHolder) {
                 return 0;
@@ -187,7 +189,6 @@ public class CityListActivity extends AppCompatActivity implements Network.DataS
         }
     };
 
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -202,6 +203,12 @@ public class CityListActivity extends AppCompatActivity implements Network.DataS
 
                 if (null == cityInfoBean) {
                     return;
+                }
+                for (int i = 0; i < bodies.size(); i++) {
+                    if(cityInfoBean.getName().contains(bodies.get(i).getCityinfo().getC3())){
+                        Toast.makeText(CityListActivity.this,"已经添加了该城市",Toast.LENGTH_SHORT).show();
+                        return;
+                    }
                 }
                 Network.getWeatherData(cityInfoBean.getName());
             }

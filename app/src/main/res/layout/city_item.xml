@@ -1,26 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:background="#FF4444">
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@android:color/white"
         android:gravity="center_vertical"
         android:orientation="vertical">
-       <!-- <TextView
-            android:id="@+id/time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:text="12:00"/>-->
         <TextView
             android:id="@+id/city_name"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="40sp"
             android:text="深圳"/>
+
         <TextView
             android:id="@+id/temperature"
             android:layout_width="wrap_content"
@@ -30,16 +27,4 @@
             android:text="20">
         </TextView>
     </RelativeLayout>
-    <TextView
-        android:id="@+id/tv_delete"
-        android:layout_width="60dp"
-        android:layout_height="match_parent"
-        android:layout_alignParentRight="true"
-        android:background="#FFF55030"
-        android:gravity="center"
-        android:paddingEnd="16dp"
-        android:paddingStart="16dp"
-        android:text="删除"
-        android:textColor="#FFFFFFFF"
-        android:textSize="14sp" />
-</LinearLayout>
+</FrameLayout>

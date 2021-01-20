@@ -4,15 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:clipChildren="false"
     tools:context=".CityListActivity">
-   <!-- <com.jueme.android.newas.SlideRecyclerView
-        android:id="@+id/city_recyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:ignore="MissingConstraints" />-->
   <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/city_recyclerView"
         android:layout_width="match_parent"
+        android:clipChildren="false"
         android:layout_height="wrap_content"
         tools:ignore="MissingConstraints" />
 </LinearLayout>
